@@ -4,7 +4,7 @@ const core = require("@actions/core");
 const { context, GitHub } = require("@actions/github");
 
 async function run() {
-    const trigger = core.getInput("trigger", { required: true });
+    const triggers = core.getMultilineInput("trigger", { required: true });
 
     const reaction = core.getInput("reaction");
     const { GITHUB_TOKEN } = process.env;
@@ -30,9 +30,17 @@ async function run() {
 
     const { owner, repo } = context.repo;
 
-
+    let triggered = false;
+    
     const prefixOnly = core.getInput("prefix_only") === 'true';
-    if ((prefixOnly && !body.startsWith(trigger)) || !body.includes(trigger)) {
+    for (const trigger in triggers) {
+        if ((prefixOnly && body.startsWith(trigger)) || body.includes(trigger)) {
+            triggered = true;
+            break;
+        }
+    }
+
+    if (!triggered) {
         core.setOutput("triggered", "false");
         return;
     }
