@@ -33,7 +33,7 @@ async function run() {
     let triggered = false;
     
     const prefixOnly = core.getInput("prefix_only") === 'true';
-    for (const trigger in triggers) {
+    for (const trigger of triggers) {
         if ((prefixOnly && body.startsWith(trigger)) || body.includes(trigger)) {
             triggered = true;
             break;
