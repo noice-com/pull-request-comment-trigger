@@ -14,9 +14,9 @@ async function run() {
     }
 
     const body =
-        context.eventName === "issue_comment"
+        (context.eventName === "issue_comment"
             ? context.payload.comment.body
-            : context.payload.pull_request.body;
+            : context.payload.pull_request.body) || '';
     core.setOutput('comment_body', body);
 
     if (
@@ -31,7 +31,7 @@ async function run() {
     const { owner, repo } = context.repo;
 
     let triggered = false;
-    
+
     const prefixOnly = core.getInput("prefix_only") === 'true';
     for (const trigger of triggers) {
         if ((prefixOnly && body.startsWith(trigger)) || body.includes(trigger)) {
